@@ -1,89 +1,113 @@
-RNN TEXT GENERATION PROCESS
-Large Corpus Workflow (Step-by-Step)
+╔══════════════════════════════════════════════════════════════╗
+║           RNN TEXT GENERATION — Step-by-Step Guide           ║
+║         From Raw Corpus to Human-Readable Output             ║
+╚══════════════════════════════════════════════════════════════╝
 
-Overview
-This guide explains how text generation works in an RNN pipeline, from raw text to generated output.
+  This guide walks through every stage of an RNN text-generation
+  pipeline, explaining what happens and why it matters.
 
-Step 1: Collect and Clean the Corpus
-What to do:
-- Gather a large text dataset.
-- Clean basic noise (extra spaces, unwanted symbols, inconsistent casing).
+──────────────────────────────────────────────────────────────
+  STEP 1  │  Collect & Clean the Corpus
+──────────────────────────────────────────────────────────────
+  ▸ Gather a large text dataset.
+  ▸ Remove extra whitespace, unwanted symbols, and fix casing.
 
-Why it matters:
-- Better data quality improves model learning.
+  WHY  →  Garbage in, garbage out. Clean data = better learning.
 
-Step 2: Tokenize the Text
-What to do:
-- Split text into tokens (usually words, but can also be characters or subwords).
+──────────────────────────────────────────────────────────────
+  STEP 2  │  Tokenize the Text
+──────────────────────────────────────────────────────────────
+  ▸ Split text into tokens — words, characters, or subwords.
 
-Why it matters:
-- The model cannot read raw strings directly; it needs token units.
+  WHY  →  Models need discrete units; raw strings won't work.
 
-Step 3: Build Vocabulary and Token IDs
-What to do:
-- Create a vocabulary of unique tokens.
-- Map each token to a numeric token ID.
+──────────────────────────────────────────────────────────────
+  STEP 3  │  Build Vocabulary & Token IDs
+──────────────────────────────────────────────────────────────
+  ▸ Collect every unique token into a vocabulary.
+  ▸ Assign each token a numeric ID.
 
-Why it matters:
-- Neural networks operate on numbers, not words.
+  WHY  →  Neural networks operate on numbers, not words.
 
-Step 4: Create Input-Output Training Pairs
-What to do:
-- Use a sliding window over token IDs.
-- Input: a sequence of context token IDs.
-- Target: the next token ID.
+──────────────────────────────────────────────────────────────
+  STEP 4  │  Create Input-Output Training Pairs
+──────────────────────────────────────────────────────────────
+  ▸ Slide a fixed-length window across token IDs.
+  ▸ Input  : sequence of context token IDs.
+  ▸ Target : the very next token ID.
 
-Example:
-- Input: ["the", "cat", "sat"]
-- Target: "on"
+  EXAMPLE
+    Input  →  [ "the",  "cat",  "sat" ]
+    Target →    "on"
 
-Why it matters:
-- This teaches the model next-token prediction.
+  WHY  →  This teaches the model next-token prediction.
 
-Step 5: Convert Token IDs to Embeddings
-What to do:
-- Pass token IDs through an Embedding layer.
+──────────────────────────────────────────────────────────────
+  STEP 5  │  Convert Token IDs to Embeddings
+──────────────────────────────────────────────────────────────
+  ▸ Pass token IDs through an Embedding layer.
 
-Why it matters:
-- Embeddings convert sparse IDs into dense vectors with semantic meaning.
+  WHY  →  Embeddings map sparse IDs to dense semantic vectors.
 
-Step 6: Pass Embeddings Through RNN/LSTM/GRU
-What to do:
-- Feed embedding sequences into the recurrent model.
+──────────────────────────────────────────────────────────────
+  STEP 6  │  Pass Embeddings Through RNN / LSTM / GRU
+──────────────────────────────────────────────────────────────
+  ▸ Feed the embedding sequences into a recurrent layer.
 
-Why it matters:
-- Recurrent layers learn sequence order and context dependencies.
+  WHY  →  Recurrent layers capture sequence order and context.
 
-Step 7: Train the Model
-What to do:
-- Predict next token at each step.
-- Use cross-entropy loss and backpropagation to update weights.
+──────────────────────────────────────────────────────────────
+  STEP 7  │  Train the Model
+──────────────────────────────────────────────────────────────
+  ▸ Predict the next token at every time step.
+  ▸ Compute cross-entropy loss; backpropagate gradients.
 
-Why it matters:
-- Training aligns model predictions with true next tokens.
+  WHY  →  Training nudges predictions toward the true next token.
 
-Step 8: Start Generation with Seed Text
-What to do:
-- Provide initial words (seed prompt), for example: "once upon a".
+──────────────────────────────────────────────────────────────
+  STEP 8  │  Start Generation with a Seed Prompt
+──────────────────────────────────────────────────────────────
+  ▸ Provide initial words, e.g. "once upon a".
 
-Why it matters:
-- Seed text gives the model a starting context.
+  WHY  →  The seed gives the model a starting context to build on.
 
-Step 9: Generate Tokens Iteratively
-What to do:
-- Predict next token.
-- Append it to the sequence.
-- Feed updated sequence back for the next prediction.
+──────────────────────────────────────────────────────────────
+  STEP 9  │  Generate Tokens Iteratively
+──────────────────────────────────────────────────────────────
+  ▸ Predict next token → append → feed back → repeat.
 
-Why it matters:
-- Repetition of this loop produces full sentences/paragraphs.
+  WHY  →  Each loop step extends the output by one token.
 
-Step 10: Decode Token IDs Back to Words
-What to do:
-- Convert predicted token IDs into readable text tokens.
+──────────────────────────────────────────────────────────────
+  STEP 10 │  Decode Token IDs Back to Words
+──────────────────────────────────────────────────────────────
+  ▸ Convert the predicted token ID sequence into readable text.
 
-Why it matters:
-- This produces the final human-readable generated output.
+  WHY  →  Produces the final human-readable generated output.
 
-Quick Pipeline View
-Corpus -> Clean -> Tokenize -> Token IDs -> Input/Target Pairs -> Embedding -> RNN/LSTM/GRU -> Train -> Seed -> Predict Next Token -> Decode to Text
+══════════════════════════════════════════════════════════════
+  PIPELINE AT A GLANCE
+══════════════════════════════════════════════════════════════
+
+  Corpus
+    │
+    ▼
+  Clean  ──▶  Tokenize  ──▶  Token IDs  ──▶  Input/Target Pairs
+                                                      │
+                                                      ▼
+                                               Embedding Layer
+                                                      │
+                                                      ▼
+                                            RNN / LSTM / GRU
+                                                      │
+                                                      ▼
+                                                   Train
+                                                      │
+                                                      ▼
+                                               Seed Prompt
+                                                      │
+                                                      ▼
+                                          Predict Next Token (loop)
+                                                      │
+                                                      ▼
+                                            Decode to Text  ✓
